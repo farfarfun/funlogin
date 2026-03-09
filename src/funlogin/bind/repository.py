@@ -16,7 +16,12 @@ class BindRepository:
         return b
 
     async def create_qq_binding(
-        self, user_id: int, openid: str, unionid: str = "", nickname: str = "", avatar_url: str = ""
+        self,
+        user_id: int,
+        openid: str,
+        unionid: str = "",
+        nickname: str = "",
+        avatar_url: str = "",
     ) -> QQBinding:
         b = QQBinding(
             user_id=user_id,
@@ -31,7 +36,12 @@ class BindRepository:
         return b
 
     async def create_wechat_binding(
-        self, user_id: int, openid: str, unionid: str = "", nickname: str = "", avatar_url: str = ""
+        self,
+        user_id: int,
+        openid: str,
+        unionid: str = "",
+        nickname: str = "",
+        avatar_url: str = "",
     ) -> WeChatBinding:
         b = WeChatBinding(
             user_id=user_id,
@@ -75,6 +85,12 @@ class BindRepository:
         )
         return {
             "phone": [p.phone for p in phones.scalars().all()],
-            "qq": [{"openid": q.openid, "nickname": q.nickname} for q in qqs.scalars().all()],
-            "wechat": [{"openid": w.openid, "nickname": w.nickname} for w in wechats.scalars().all()],
+            "qq": [
+                {"openid": q.openid, "nickname": q.nickname}
+                for q in qqs.scalars().all()
+            ],
+            "wechat": [
+                {"openid": w.openid, "nickname": w.nickname}
+                for w in wechats.scalars().all()
+            ],
         }

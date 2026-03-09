@@ -50,7 +50,9 @@ async def bind_phone(
 ):
     ok = await service.bind_phone(user.id, body.phone, body.code)
     if not ok:
-        raise HTTPException(status_code=400, detail="Invalid code or phone already bound")
+        raise HTTPException(
+            status_code=400, detail="Invalid code or phone already bound"
+        )
     return {"code": 0, "data": None, "message": "ok"}
 
 
@@ -115,7 +117,9 @@ async def wechat_callback(
         info.get("avatar", ""),
     )
     if not ok:
-        raise HTTPException(status_code=400, detail="WeChat already bound to another user")
+        raise HTTPException(
+            status_code=400, detail="WeChat already bound to another user"
+        )
     return {"code": 0, "data": None, "message": "ok"}
 
 

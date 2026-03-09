@@ -16,7 +16,10 @@ async def test_exchange_code_for_user_info_mock():
     responses = [
         ("access_token=TOKEN&expires_in=7776000", None),
         ('callback( {"openid":"OID123"} );', None),
-        ('{"nickname":"Test","figureurl_qq_2":"https://avatar"}', {"nickname": "Test", "figureurl_qq_2": "https://avatar"}),
+        (
+            '{"nickname":"Test","figureurl_qq_2":"https://avatar"}',
+            {"nickname": "Test", "figureurl_qq_2": "https://avatar"},
+        ),
     ]
     idx = [0]
 
@@ -24,11 +27,14 @@ async def test_exchange_code_for_user_info_mock():
         i = idx[0]
         idx[0] += 1
         txt, j = responses[min(i, 2)]
+
         class Resp:
             status_code = 200
             text = txt
+
             def json(s):
                 return j or {}
+
         return Resp()
 
     mock_client = AsyncMock()

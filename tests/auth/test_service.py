@@ -22,9 +22,7 @@ async def test_register_with_username_password_success(auth_service):
 
 @pytest.mark.asyncio
 async def test_register_duplicate_username_fails(auth_service):
-    await auth_service.register_with_username_password(
-        username="bob", password="pass"
-    )
+    await auth_service.register_with_username_password(username="bob", password="pass")
     result = await auth_service.register_with_username_password(
         username="bob", password="other"
     )

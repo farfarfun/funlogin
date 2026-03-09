@@ -59,8 +59,10 @@ async def test_register_duplicate_returns_400(db_session):
 
     app = FastAPI()
     app.include_router(router)
+
     async def get_test_session():
         yield db_session
+
     app.dependency_overrides[get_async_session] = get_test_session
 
     async with AsyncClient(

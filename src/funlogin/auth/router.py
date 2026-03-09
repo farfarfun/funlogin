@@ -74,7 +74,9 @@ async def register(
             phone=body.phone, code=body.code
         )
         if result is None:
-            raise HTTPException(status_code=400, detail="Invalid code or phone already exists")
+            raise HTTPException(
+                status_code=400, detail="Invalid code or phone already exists"
+            )
     else:
         raise HTTPException(
             status_code=400,
@@ -97,9 +99,7 @@ async def login(
             email=body.email, password=body.password
         )
     elif body.phone and body.code:
-        result = await service.login_with_phone_code(
-            phone=body.phone, code=body.code
-        )
+        result = await service.login_with_phone_code(phone=body.phone, code=body.code)
     else:
         raise HTTPException(
             status_code=400,

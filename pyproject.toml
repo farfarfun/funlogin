@@ -1,44 +1,28 @@
 [project]
 name = "funlogin"
-version = "1.0.6"
+version = "1.0.7"
 description = "FastAPI auth: register, login (JWT), QQ/WeChat/phone binding"
 readme = "README.md"
 requires-python = ">=3.8"
-dependencies = [
-    "fastapi",
-    "uvicorn",
-    "pydantic-settings",
-    "sqlalchemy[asyncio]",
-    "aiosqlite",
-    "asyncpg",
-    "aiomysql",
-    "pyjwt",
-    "bcrypt",
-    "httpx",
-    "alibabacloud-dysmsapi20170525",
-    "alembic",
-]
+dependencies = [ "fastapi", "uvicorn", "pydantic-settings", "sqlalchemy[asyncio]", "aiosqlite", "asyncpg", "aiomysql", "pyjwt", "bcrypt", "httpx", "alibabacloud-dysmsapi20170525",]
+[[project.authors]]
+name = "牛哥"
+email = "niuliangtao@qq.com"
+
+[[project.authors]]
+name = "farfarfun"
+email = "farfarfun@qq.com"
+
+[[project.maintainers]]
+name = "牛哥"
+email = "niuliangtao@qq.com"
+
+[[project.maintainers]]
+name = "farfarfun"
+email = "farfarfun@qq.com"
 
 [project.optional-dependencies]
-test = ["pytest", "pytest-asyncio"]
-
-[tool.pytest.ini_options]
-asyncio_mode = "auto"
-[[project.authors]]
-name = "牛哥"
-email = "niuliangtao@qq.com"
-
-[[project.authors]]
-name = "farfarfun"
-email = "farfarfun@qq.com"
-
-[[project.maintainers]]
-name = "牛哥"
-email = "niuliangtao@qq.com"
-
-[[project.maintainers]]
-name = "farfarfun"
-email = "farfarfun@qq.com"
+test = [ "pytest", "pytest-asyncio",]
 
 [project.urls]
 Organization = "https://github.com/farfarfun"
@@ -47,3 +31,6 @@ Releases = "https://github.com/farfarfun/funlogin/releases"
 
 [tool.setuptools]
 license-files = []
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"

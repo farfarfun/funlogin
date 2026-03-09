@@ -42,34 +42,59 @@ app.include_router(router, prefix="/api")
 # 运行: uvicorn your_app:app
 ```
 
-## API 列表
+## API 接口（三方调用参考）
 
-### 认证 (Auth)
+挂载后基础路径为 `/api`，以下接口均已联调通过。
 
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| POST | `/auth/send-code` | 发送手机验证码（phone） |
-| POST | `/auth/register` | 注册（username+password / email+password / phone+code） |
-| POST | `/auth/login` | 登录 |
-| POST | `/auth/refresh` | 刷新 Token |
+**统一响应格式：**
 
-### 绑定 (Bind)
-
-| 方法 | 路径 | 说明 |
-|------|------|------|
-| POST | `/bind/phone/send-code` | 发送手机验证码（需 JWT） |
-| POST | `/bind/phone` | 绑定手机 |
-| GET | `/bind/qq/authorize` | 获取 QQ 授权 URL |
-| POST | `/bind/qq/callback` | QQ 回调绑定 |
-| GET | `/bind/wechat/authorize` | 获取微信授权 URL |
-| POST | `/bind/wechat/callback` | 微信回调绑定 |
-| GET | `/bind/list` | 查询绑定列表（需 JWT） |
-
-## 数据库迁移
-
-```bash
-alembic upgrade head
+```json
+{"code": 0, "data": {...}, "message": "ok"}
 ```
+
+| code | 含义 |
+|------|------|
+| 0 | 成功 |
+| 40001 | 业务错误（如用户名已存在） |
+| 40101 | 未登录 / Token 无效 |
+| 40102 | Token 已过期 |
+| 40301 | 禁止访问 |
+| 50001 | 服务端内部错误 |
+
+**需登录接口**：请求头加 `Authorization: Bearer <access_token>`。
+
+---
+
+### 认证 Auth
+
+| 方法 | 路径 | 请求体 | 响应 data 示例 |
+|------|------|--------|----------------|
+| POST | `/api/auth/send-code` | `{"phone": "13800138000"}` | 无 |
+| POST | `/api/auth/register` | `{"username": "alice", "password": "123456"}` 或 `{"email": "a@x.com", "password": "p"}` 或 `{"phone": "138...", "code": "123456"}` | `{"user_id": 1}` |
+| POST | `/api/auth/login` | 同 register，二选一 | `{"access_token": "...", "refresh_token": "..."}` |
+| POST | `/api/auth/refresh` | `{"refresh_token": "..."}` | `{"access_token": "...", "refresh_token": "..."}` |
+
+---
+
+### 绑定 Bind（需 JWT）
+
+| 方法 | 路径 | 请求体 / 参数 | 响应 data 示例 |
+|------|------|---------------|----------------|
+| POST | `/api/bind/phone/send-code` | `{"phone": "13800138000"}` | 无 |
+| POST | `/api/bind/phone` | `{"phone": "138...", "code": "123456"}` | 无 |
+| GET | `/api/bind/qq/authorize` | Query: `redirect_uri=https://...` | `{"url": "...", "state": "..."}` |
+| POST | `/api/bind/qq/callback` | `{"code": "...", "redirect_uri": "..."}` | 无 |
+| GET | `/api/bind/wechat/authorize` | Query: `redirect_uri=https://...` | `{"url": "...", "state": "..."}` |
+| POST | `/api/bind/wechat/callback` | `{"code": "..."}` | 无 |
+| GET | `/api/bind/list` | 无 | `{"phone": ["138..."], "qq": [...], "wechat": [...]}` |
+
+---
+
+完整 OpenAPI 3.1 描述见 [docs/openapi.json](docs/openapi.json)，可用于生成客户端或 Mock。
+
+## 数据库
+
+示例应用启动时会自动创建表。若自行集成，在应用启动时调用一次 `await funlogin.core.database.init_db()` 即可建表。
 
 ## 开发
 

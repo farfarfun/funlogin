@@ -17,6 +17,7 @@ async def test_list_bindings_requires_auth(db_session):
 
     async def get_session():
         yield db_session
+
     app.dependency_overrides[get_async_session] = get_session
 
     async with AsyncClient(
@@ -34,6 +35,7 @@ async def test_list_bindings_with_token(db_session):
 
     async def get_session():
         yield db_session
+
     app.dependency_overrides[get_async_session] = get_session
 
     user = await AuthRepository(db_session).create_user()
@@ -59,6 +61,7 @@ async def test_bind_phone_flow(db_session):
 
     async def get_session():
         yield db_session
+
     app.dependency_overrides[get_async_session] = get_session
 
     user = await AuthRepository(db_session).create_user()

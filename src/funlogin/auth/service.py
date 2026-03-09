@@ -50,9 +50,7 @@ class AuthService:
         )
         return {"user_id": user.id}
 
-    async def login_with_email_password(
-        self, email: str, password: str
-    ) -> dict | None:
+    async def login_with_email_password(self, email: str, password: str) -> dict | None:
         cred = await self.repo.get_credential_by_identifier("email", email)
         if cred is None or not verify_password(password, cred.secret_hash):
             return None
@@ -62,9 +60,7 @@ class AuthService:
             "refresh_token": create_refresh_token(payload),
         }
 
-    async def register_with_phone_code(
-        self, phone: str, code: str
-    ) -> dict | None:
+    async def register_with_phone_code(self, phone: str, code: str) -> dict | None:
         if not verify_code(phone, code):
             return None
         cred = await self.repo.get_credential_by_identifier("phone", phone)

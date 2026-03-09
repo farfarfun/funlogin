@@ -76,7 +76,11 @@ async def exchange_code_for_user_info(
             return {"openid": openid, "unionid": "", "nickname": "", "avatar": ""}
         data = r3.json()
         nickname = data.get("nickname", "")
-        avatar = data.get("figureurl_qq_2") or data.get("figureurl_2") or data.get("figureurl", "")
+        avatar = (
+            data.get("figureurl_qq_2")
+            or data.get("figureurl_2")
+            or data.get("figureurl", "")
+        )
 
         return {
             "openid": openid,

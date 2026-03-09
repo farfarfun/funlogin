@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>funlogin 前端测试</title>
+  <style>
+    :root {
+      --bg: #0f0f12;
+      --surface: #1a1a20;
+      --border: #2a2a32;
+      --text: #e4e4e7;
+      --muted: #71717a;
+      --accent: #a78bfa;
+      --success: #34d399;
+      --error: #f87171;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "JetBrains Mono", "SF Mono", Consolas, monospace;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--accent); }
+    .sub { color: var(--muted); font-size: 0.875rem; margin-bottom: 1.5rem; }
+    label { display: block; margin-top: 0.75rem; color: var(--muted); font-size: 0.8rem; }
+    input, button {
+      width: 100%;
+      max-width: 320px;
+      padding: 0.6rem 0.75rem;
+      margin-top: 0.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font: inherit;
+    }
+    input:focus { outline: none; border-color: var(--accent); }
+    button {
+      cursor: pointer;
+      margin-top: 1rem;
+      background: var(--accent);
+      border: none;
+      color: var(--bg);
+      font-weight: 600;
+    }
+    button:hover { opacity: 0.9; }
+    button.secondary { background: var(--surface); color: var(--text); }
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      max-width: 480px;
+    }
+    section h2 { font-size: 1rem; margin: 0 0 0.75rem 0; color: var(--muted); }
+    #out {
+      background: #0a0a0c;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+      min-height: 120px;
+      max-width: 640px;
+    }
+    .ok { color: var(--success); }
+    .err { color: var(--error); }
+  </style>
+</head>
+<body>
+  <h1>funlogin 前端测试</h1>
+  <p class="sub">请先启动后端：uv run uvicorn example.app:app --reload --port 8001</p>
+
+  <label>API 地址</label>
+  <input type="text" id="apiBase" value="http://127.0.0.1:8001/api" placeholder="http://127.0.0.1:8001/api" />
+
+  <section>
+    <h2>注册</h2>
+    <label>用户名</label>
+    <input type="text" id="regUsername" placeholder="alice" />
+    <label>密码</label>
+    <input type="password" id="regPassword" placeholder="••••••" />
+    <button type="button" id="btnRegister">注册</button>
+  </section>
+
+  <section>
+    <h2>登录</h2>
+    <label>用户名</label>
+    <input type="text" id="loginUsername" placeholder="alice" />
+    <label>密码</label>
+    <input type="password" id="loginPassword" placeholder="••••••" />
+    <button type="button" id="btnLogin">登录</button>
+  </section>
+
+  <section>
+    <h2>需要登录的接口</h2>
+    <p class="sub">登录成功后会保存 Token，再点击下方按钮</p>
+    <button type="button" id="btnBindList" class="secondary">获取绑定列表 GET /api/bind/list</button>
+  </section>
+
+  <label>接口返回</label>
+  <pre id="out">（操作后这里会显示 JSON）</pre>
+
+  <script>
+    const apiBase = () => document.getElementById('apiBase').value.replace(/\/$/, '');
+    const out = document.getElementById('out');
+    let accessToken = '';
+
+    function log(msg, isError = false) {
+      out.textContent = typeof msg === 'string' ? msg : JSON.stringify(msg, null, 2);
+      out.className = isError ? 'err' : 'ok';
+    }
+
+    async function req(method, path, body, useToken = false) {
+      const opts = { method, headers: { 'Content-Type': 'application/json' } };
+      if (body) opts.body = JSON.stringify(body);
+      if (useToken && accessToken) opts.headers['Authorization'] = 'Bearer ' + accessToken;
+      const res = await fetch(apiBase() + path, opts);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        log({ status: res.status, error: data.detail || data.message || data }, true);
+        return null;
+      }
+      return data;
+    }
+
+    document.getElementById('btnRegister').onclick = async () => {
+      const username = document.getElementById('regUsername').value.trim();
+      const password = document.getElementById('regPassword').value;
+      if (!username || !password) return log('请填写用户名和密码', true);
+      const data = await req('POST', '/auth/register', { username, password });
+      if (data) log(data);
+    };
+
+    document.getElementById('btnLogin').onclick = async () => {
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      if (!username || !password) return log('请填写用户名和密码', true);
+      const data = await req('POST', '/auth/login', { username, password });
+      if (data && data.data && data.data.access_token) {
+        accessToken = data.data.access_token;
+        log({ message: '登录成功，Token 已保存', tokenPreview: accessToken.slice(0, 30) + '...' });
+      } else if (data) log(data);
+    };
+
+    document.getElementById('btnBindList').onclick = async () => {
+      if (!accessToken) return log('请先登录', true);
+      const data = await req('GET', '/bind/list', null, true);
+      if (data) log(data);
+    };
+  </script>
+</body>
+</html>

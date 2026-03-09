@@ -18,25 +18,39 @@ class BindService:
         return True
 
     async def bind_qq(
-        self, user_id: int, openid: str, unionid: str = "", nickname: str = "", avatar_url: str = ""
+        self,
+        user_id: int,
+        openid: str,
+        unionid: str = "",
+        nickname: str = "",
+        avatar_url: str = "",
     ) -> bool:
         existing = await self.repo.get_qq_binding(openid)
         if existing and existing.user_id != user_id:
             return False
         if existing:
             return True
-        await self.repo.create_qq_binding(user_id, openid, unionid, nickname, avatar_url)
+        await self.repo.create_qq_binding(
+            user_id, openid, unionid, nickname, avatar_url
+        )
         return True
 
     async def bind_wechat(
-        self, user_id: int, openid: str, unionid: str = "", nickname: str = "", avatar_url: str = ""
+        self,
+        user_id: int,
+        openid: str,
+        unionid: str = "",
+        nickname: str = "",
+        avatar_url: str = "",
     ) -> bool:
         existing = await self.repo.get_wechat_binding(openid)
         if existing and existing.user_id != user_id:
             return False
         if existing:
             return True
-        await self.repo.create_wechat_binding(user_id, openid, unionid, nickname, avatar_url)
+        await self.repo.create_wechat_binding(
+            user_id, openid, unionid, nickname, avatar_url
+        )
         return True
 
     async def list_bindings(self, user_id: int) -> dict:

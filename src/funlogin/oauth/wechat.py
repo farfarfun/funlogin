@@ -15,9 +15,7 @@ def get_authorize_url(redirect_uri: str, state: str) -> str:
     return f"https://open.weixin.qq.com/connect/oauth2/authorize?{urlencode(params)}#wechat_redirect"
 
 
-async def exchange_code_for_user_info(
-    code: str, *, _client=None
-) -> dict | None:
+async def exchange_code_for_user_info(code: str, *, _client=None) -> dict | None:
     import httpx
 
     settings = get_settings()
@@ -47,7 +45,12 @@ async def exchange_code_for_user_info(
             params={"access_token": access_token, "openid": openid, "lang": "zh_CN"},
         )
         if r2.status_code != 200:
-            return {"openid": openid, "unionid": data.get("unionid", ""), "nickname": "", "avatar": ""}
+            return {
+                "openid": openid,
+                "unionid": data.get("unionid", ""),
+                "nickname": "",
+                "avatar": "",
+            }
         u = r2.json()
         return {
             "openid": openid,
