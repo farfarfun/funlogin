@@ -1,7 +1,13 @@
 from collections.abc import AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import DeclarativeBase
 
 from funlogin.config import get_settings
+
+
+class Base(DeclarativeBase):
+    pass
+
 
 settings = get_settings()
 engine = create_async_engine(settings.database_url, echo=False)
