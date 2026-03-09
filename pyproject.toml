@@ -20,7 +20,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest"]
+test = ["pytest", "pytest-asyncio"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
 [[project.authors]]
 name = "牛哥"
 email = "niuliangtao@qq.com"
