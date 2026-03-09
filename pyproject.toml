@@ -13,7 +13,7 @@ dependencies = [
     "asyncpg",
     "aiomysql",
     "pyjwt",
-    "passlib[bcrypt]",
+    "bcrypt",
     "httpx",
     "alibabacloud-dysmsapi20170525",
     "alembic",
