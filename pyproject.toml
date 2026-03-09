@@ -1,6 +1,6 @@
 [project]
 name = "funlogin"
-version = "1.0.7"
+version = "1.0.8"
 description = "FastAPI auth: register, login (JWT), QQ/WeChat/phone binding"
 readme = "README.md"
 requires-python = ">=3.8"
