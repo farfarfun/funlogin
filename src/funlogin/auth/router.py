@@ -7,6 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from funlogin.auth.repository import AuthRepository
 from funlogin.auth.service import AuthService
 from funlogin.core.database import get_async_session
+from funlogin.deps import get_current_user
+from funlogin.models import User
 from funlogin.core.jwt import create_access_token, create_refresh_token, decode_token
 from funlogin.sms.aliyun import send_sms_code
 
@@ -35,6 +37,10 @@ class RefreshRequest(BaseModel):
 
 class SendCodeRequest(BaseModel):
     phone: str
+
+
+class UpdateRoleRequest(BaseModel):
+    role: int
 
 
 @router.post("/send-code")
@@ -108,6 +114,35 @@ async def login(
     if result is None:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return {"code": 0, "data": result, "message": "ok"}
+
+
+@router.get("/me")
+async def get_me(
+    user: User = Depends(get_current_user),
+    service: AuthService = Depends(get_auth_service),
+):
+    """获取当前登录用户信息（user_id, role, username, email, phone 等），需登录。"""
+    info = await service.get_user_info(user.id)
+    if info is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"code": 0, "data": info, "message": "ok"}
+
+
+@router.patch("/role")
+async def update_role(
+    body: UpdateRoleRequest,
+    user: User = Depends(get_current_user),
+    service: AuthService = Depends(get_auth_service),
+):
+    """修改当前用户角色，需登录。枚举值由使用方定义。"""
+    updated = await service.update_role(user.id, body.role)
+    if updated is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {
+        "code": 0,
+        "data": {"user_id": updated.id, "role": updated.role},
+        "message": "ok",
+    }
 
 
 @router.post("/refresh")

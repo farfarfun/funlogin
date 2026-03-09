@@ -72,7 +72,9 @@ app.include_router(router, prefix="/api")
 | POST | `/api/auth/send-code` | `{"phone": "13800138000"}` | 无 |
 | POST | `/api/auth/register` | `{"username": "alice", "password": "123456"}` 或 `{"email": "a@x.com", "password": "p"}` 或 `{"phone": "138...", "code": "123456"}` | `{"user_id": 1}` |
 | POST | `/api/auth/login` | 同 register，二选一 | `{"access_token": "...", "refresh_token": "..."}` |
+| GET | `/api/auth/me` | 无（需 JWT） | `{"user_id": 1, "role": 1, "username": "alice", "email": null, "phone": null, "created_at": "...", "updated_at": "..."}` |
 | POST | `/api/auth/refresh` | `{"refresh_token": "..."}` | `{"access_token": "...", "refresh_token": "..."}` |
+| PATCH | `/api/auth/role` | `{"role": 1}`（需 JWT） | `{"user_id": 1, "role": 1}` |
 
 ---
 
@@ -95,6 +97,8 @@ app.include_router(router, prefix="/api")
 ## 数据库
 
 示例应用启动时会自动创建表。若自行集成，在应用启动时调用一次 `await funlogin.core.database.init_db()` 即可建表。
+
+**User 表 `role` 字段**：`int` 类型，默认 1，由使用方定义枚举值（如 1=普通用户、2=管理员），用于权限控制。若升级前已有数据库，需删库重建或手动 `ALTER TABLE users ADD COLUMN role INTEGER DEFAULT 1`。
 
 ## 开发
 
