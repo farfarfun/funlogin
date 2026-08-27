@@ -1,6 +1,6 @@
 [project]
 name = "funlogin"
-version = "1.0.9"
+version = "1.0.10"
 description = "FastAPI auth: register, login (JWT), QQ/WeChat/phone binding"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -28,6 +28,10 @@ test = [ "pytest", "pytest-asyncio",]
 Organization = "https://github.com/farfarfun"
 Repository = "https://github.com/farfarfun/funlogin"
 Releases = "https://github.com/farfarfun/funlogin/releases"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.setuptools]
 license-files = []
