@@ -3,7 +3,7 @@ name = "funlogin"
 version = "1.0.10"
 description = "FastAPI auth: register, login (JWT), QQ/WeChat/phone binding"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [ "fastapi", "uvicorn", "pydantic-settings", "sqlalchemy[asyncio]", "aiosqlite", "asyncpg", "aiomysql", "pyjwt", "bcrypt", "httpx", "alibabacloud-dysmsapi20170525",]
 [[project.authors]]
 name = "牛哥"
