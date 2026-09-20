@@ -12,6 +12,7 @@
           "auth"
         ],
         "summary": "Send Code",
+        "description": "向指定手机号发送 6 位数字验证码，供注册/登录使用。\n\n参数：\n    body: 请求体，包含 ``phone`` 手机号。\n\n返回：\n    统一响应格式；短信发送失败时返回 500。",
         "operationId": "send_code_api_auth_send_code_post",
         "requestBody": {
           "content": {
@@ -28,7 +29,11 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Send Code Api Auth Send Code Post"
+                }
               }
             }
           },
@@ -51,6 +56,7 @@
           "auth"
         ],
         "summary": "Register",
+        "description": "注册新用户，三选一：用户名+密码 / 邮箱+密码 / 手机号+验证码。",
         "operationId": "register_api_auth_register_post",
         "requestBody": {
           "content": {
@@ -90,6 +96,7 @@
           "auth"
         ],
         "summary": "Login",
+        "description": "登录，三选一：用户名+密码 / 邮箱+密码 / 手机号+验证码，成功返回 JWT 令牌对。",
         "operationId": "login_api_auth_login_post",
         "requestBody": {
           "content": {
@@ -199,6 +206,7 @@
           "auth"
         ],
         "summary": "Refresh",
+        "description": "用 refresh token 换取新的 access token / refresh token 对。",
         "operationId": "refresh_api_auth_refresh_post",
         "requestBody": {
           "content": {

@@ -4,9 +4,12 @@
 import json
 import os
 
+from farlog import getLogger
 from fastapi import FastAPI
 
 from funlogin import router
+
+logger = getLogger("funlogin")
 
 app = FastAPI(
     title="funlogin API",
@@ -22,4 +25,4 @@ if __name__ == "__main__":
     out = os.path.join(docs_dir, "openapi.json")
     with open(out, "w", encoding="utf-8") as f:
         json.dump(schema, f, ensure_ascii=False, indent=2)
-    print(f"Written {out}")
+    logger.info("OpenAPI schema 已写入 {}", out)  # noqa: PLE1205 — farlog/loguru 用 `{}` 占位

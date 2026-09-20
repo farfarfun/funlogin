@@ -7,9 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from funlogin.auth.repository import AuthRepository
 from funlogin.auth.service import AuthService
 from funlogin.core.database import get_async_session
+from funlogin.core.jwt import create_access_token, create_refresh_token, decode_token
 from funlogin.deps import get_current_user
 from funlogin.models import User
-from funlogin.core.jwt import create_access_token, create_refresh_token, decode_token
 from funlogin.sms.aliyun import send_sms_code
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -44,7 +44,15 @@ class UpdateRoleRequest(BaseModel):
 
 
 @router.post("/send-code")
-async def send_code(body: SendCodeRequest):
+async def send_code(body: SendCodeRequest) -> dict:
+    """向指定手机号发送 6 位数字验证码，供注册/登录使用。
+
+    参数：
+        body: 请求体，包含 ``phone`` 手机号。
+
+    返回：
+        统一响应格式；短信发送失败时返回 500。
+    """
     code = "".join(secrets.choice("0123456789") for _ in range(6))
     ok = send_sms_code(body.phone, code)
     if not ok:
@@ -63,6 +71,7 @@ async def register(
     body: RegisterRequest,
     service: AuthService = Depends(get_auth_service),
 ):
+    """注册新用户，三选一：用户名+密码 / 邮箱+密码 / 手机号+验证码。"""
     if body.username and body.password:
         result = await service.register_with_username_password(
             username=body.username, password=body.password
@@ -96,6 +105,7 @@ async def login(
     body: LoginRequest,
     service: AuthService = Depends(get_auth_service),
 ):
+    """登录，三选一：用户名+密码 / 邮箱+密码 / 手机号+验证码，成功返回 JWT 令牌对。"""
     if body.username and body.password:
         result = await service.login_with_username_password(
             username=body.username, password=body.password
@@ -147,6 +157,7 @@ async def update_role(
 
 @router.post("/refresh")
 async def refresh(body: RefreshRequest):
+    """用 refresh token 换取新的 access token / refresh token 对。"""
     payload = decode_token(body.refresh_token)
     if payload is None:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
