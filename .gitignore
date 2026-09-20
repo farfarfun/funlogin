@@ -169,12 +169,8 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# PyCharm
-#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
+# PyCharm / JetBrains IDE 项目配置，不进版本管理
+.idea/
 
 # Abstra
 # Abstra is an AI-powered process automation framework.
@@ -182,12 +178,8 @@ cython_debug/
 # Learn more at https://abstra.io/docs
 .abstra/
 
-# Visual Studio Code
-#  Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore 
-#  that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
-#  and can be added to the global gitignore or merged into this file. However, if you prefer, 
-#  you could uncomment the following to ignore the entire vscode folder
-# .vscode/
+# Visual Studio Code 项目配置，不进版本管理
+.vscode/
 
 # Ruff stuff:
 .ruff_cache/
@@ -209,6 +201,21 @@ __marimo__/
 
 # Git worktrees
 .worktrees/
+
+# scripts/setup.sh 服务运行时文件（PID/日志/lock）
+.run/
+logs/
+
+# 大文件压缩包，确需版本化走 Git LFS
+*.rar
+
+# 前端依赖目录（本仓库示例前端为纯静态页，暂无 node_modules，预留规则）
+node_modules/
+
+# scripts/lib/ 是 scripts/services/*.sh 复用的共享脚本库，需要版本化；
+# 上面通用的 `lib/` 规则（Python 构建产物目录）会误伤它，这里显式取消忽略。
+!scripts/lib/
+!scripts/lib/**
 
 # ---- AI 编码助手 ----
 # 只忽略本地状态；团队有意共享的 agent / 命令 / 规则定义仍然版本化。
