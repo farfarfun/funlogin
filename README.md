@@ -17,7 +17,7 @@ uv pip install -e .
 | 变量 | 说明 | 默认 |
 |------|------|------|
 | `FUNLOGIN_DATABASE_URL` | 数据库连接 | `sqlite+aiosqlite:///./funlogin.db` |
-| `FUNLOGIN_JWT_SECRET` | JWT 密钥 | `change-me-in-production` |
+| `FUNLOGIN_JWT_SECRET` | JWT 密钥，**必填，无默认值**，未配置启动即失败 | 无（出于安全考虑不提供固定默认值） |
 | `FUNLOGIN_JWT_ALGORITHM` | JWT 算法 | `HS256` |
 | `FUNLOGIN_JWT_ACCESS_EXPIRE` | Access Token 过期秒数 | `3600` |
 | `FUNLOGIN_JWT_REFRESH_EXPIRE` | Refresh Token 过期秒数 | `604800` |
@@ -100,9 +100,32 @@ app.include_router(router, prefix="/api")
 
 **User 表 `role` 字段**：`int` 类型，默认 1，由使用方定义枚举值（如 1=普通用户、2=管理员），用于权限控制。若升级前已有数据库，需删库重建或手动 `ALTER TABLE users ADD COLUMN role INTEGER DEFAULT 1`。
 
+## 示例服务
+
+`example/` 下提供一个可直接运行的演示后端 + 静态测试前端，通过
+`scripts/setup.sh` 统一管理启停（用法见 [example/README.md](example/README.md)）：
+
+```bash
+./scripts/setup.sh run backend dev
+./scripts/setup.sh run frontend dev
+```
+
 ## 开发
 
 ```bash
 pip install -e ".[test]"
 pytest -v
 ```
+
+---
+
+## 关于 farfarfun
+
+[farfarfun](https://github.com/farfarfun) 是一个专注于实用工具库的开源组织，
+涵盖云存储、数据处理、AI、多媒体与开发工具链等方向。
+
+- 🏠 组织主页：<https://github.com/farfarfun>
+- 📦 PyPI：<https://pypi.org/user/niuliangtao/>
+- 📧 联系：farfarfun@qq.com
+
+本项目基于 [MIT](LICENSE) 协议开源。
