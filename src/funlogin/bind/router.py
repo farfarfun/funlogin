@@ -34,7 +34,7 @@ class BindPhoneRequest(BaseModel):
 async def send_phone_code(
     body: SendCodeRequest,
     user: User = Depends(get_current_user),
-):
+) -> dict:
     code = "".join(secrets.choice("0123456789") for _ in range(6))
     ok = send_sms_code(body.phone, code)
     if not ok:
@@ -47,7 +47,7 @@ async def bind_phone(
     body: BindPhoneRequest,
     user: User = Depends(get_current_user),
     service: BindService = Depends(get_bind_service),
-):
+) -> dict:
     ok = await service.bind_phone(user.id, body.phone, body.code)
     if not ok:
         raise HTTPException(
@@ -57,7 +57,7 @@ async def bind_phone(
 
 
 @router.get("/qq/authorize")
-async def qq_authorize(redirect_uri: str):
+async def qq_authorize(redirect_uri: str) -> dict:
     state = secrets.token_urlsafe(16)
     url = qq_authorize_url(redirect_uri, state)
     return {"code": 0, "data": {"url": url, "state": state}, "message": "ok"}
@@ -73,7 +73,7 @@ async def qq_callback(
     body: BindQQRequest,
     user: User = Depends(get_current_user),
     service: BindService = Depends(get_bind_service),
-):
+) -> dict:
     info = await qq_exchange(body.code, body.redirect_uri)
     if info is None:
         raise HTTPException(status_code=400, detail="QQ auth failed")
@@ -90,7 +90,7 @@ async def qq_callback(
 
 
 @router.get("/wechat/authorize")
-async def wechat_authorize(redirect_uri: str):
+async def wechat_authorize(redirect_uri: str) -> dict:
     state = secrets.token_urlsafe(16)
     url = wechat_authorize_url(redirect_uri, state)
     return {"code": 0, "data": {"url": url, "state": state}, "message": "ok"}
@@ -105,7 +105,7 @@ async def wechat_callback(
     body: BindWeChatRequest,
     user: User = Depends(get_current_user),
     service: BindService = Depends(get_bind_service),
-):
+) -> dict:
     info = await wechat_exchange(body.code)
     if info is None:
         raise HTTPException(status_code=400, detail="WeChat auth failed")
@@ -127,6 +127,6 @@ async def wechat_callback(
 async def list_bindings(
     user: User = Depends(get_current_user),
     service: BindService = Depends(get_bind_service),
-):
+) -> dict:
     data = await service.list_bindings(user.id)
     return {"code": 0, "data": data, "message": "ok"}

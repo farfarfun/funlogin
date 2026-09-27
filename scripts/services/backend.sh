@@ -34,7 +34,7 @@ backend_command() {
     prod)
       command -v uvicorn >/dev/null 2>&1 || die "prod 模式需要已安装的 uvicorn（pip/uv pip install uvicorn），拒绝回退到 uv run"
       python3 -c "import funlogin" >/dev/null 2>&1 || die "prod 模式需要已安装的正式 funlogin 包（pip/uv pip install funlogin），当前环境 import 失败"
-      COMMAND=(uvicorn example.app:app --host 0.0.0.0 --port "${PORT}")
+      COMMAND=(uvicorn funlogin.app:app --host 0.0.0.0 --port "${PORT}")
       ;;
     *)
       die "env 必须是 dev 或 prod，得到：${env:-<empty>}"

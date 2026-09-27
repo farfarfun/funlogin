@@ -70,7 +70,7 @@ def get_auth_service(
 async def register(
     body: RegisterRequest,
     service: AuthService = Depends(get_auth_service),
-):
+) -> dict:
     """注册新用户，三选一：用户名+密码 / 邮箱+密码 / 手机号+验证码。"""
     if body.username and body.password:
         result = await service.register_with_username_password(
@@ -104,7 +104,7 @@ async def register(
 async def login(
     body: LoginRequest,
     service: AuthService = Depends(get_auth_service),
-):
+) -> dict:
     """登录，三选一：用户名+密码 / 邮箱+密码 / 手机号+验证码，成功返回 JWT 令牌对。"""
     if body.username and body.password:
         result = await service.login_with_username_password(
@@ -130,7 +130,7 @@ async def login(
 async def get_me(
     user: User = Depends(get_current_user),
     service: AuthService = Depends(get_auth_service),
-):
+) -> dict:
     """获取当前登录用户信息（user_id, role, username, email, phone 等），需登录。"""
     info = await service.get_user_info(user.id)
     if info is None:
@@ -143,7 +143,7 @@ async def update_role(
     body: UpdateRoleRequest,
     user: User = Depends(get_current_user),
     service: AuthService = Depends(get_auth_service),
-):
+) -> dict:
     """修改当前用户角色，需登录。枚举值由使用方定义。"""
     updated = await service.update_role(user.id, body.role)
     if updated is None:
@@ -156,7 +156,7 @@ async def update_role(
 
 
 @router.post("/refresh")
-async def refresh(body: RefreshRequest):
+async def refresh(body: RefreshRequest) -> dict:
     """用 refresh token 换取新的 access token / refresh token 对。"""
     payload = decode_token(body.refresh_token)
     if payload is None:
