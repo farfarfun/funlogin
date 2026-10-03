@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from funlogin import router
+from funlogin.config import get_settings
 from funlogin.core.database import init_db
 
 
@@ -19,7 +20,9 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="funlogin", version="1.0.10", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    # 默认只放行本机回环地址，生产跨域来源通过 FUNLOGIN_CORS_ORIGINS 显式配置，
+    # 不默认开放通配符 + allow_credentials 的不受限生产访问策略。
+    allow_origins=get_settings().cors_origin_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -63,6 +63,14 @@ async def send_code(body: SendCodeRequest) -> dict:
 def get_auth_service(
     session: AsyncSession = Depends(get_async_session),
 ) -> AuthService:
+    """FastAPI 依赖工厂：按请求创建绑定当前数据库会话的 ``AuthService``。
+
+    参数：
+        session: 由 :func:`funlogin.core.database.get_async_session` 注入的异步会话。
+
+    返回：
+        新建的 ``AuthService`` 实例。
+    """
     return AuthService(AuthRepository(session))
 
 

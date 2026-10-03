@@ -1015,10 +1015,7 @@ name = "funlogin"
 version = "1.0.10"
 source = { editable = "." }
 dependencies = [
-    { name = "aiomysql" },
     { name = "aiosqlite" },
-    { name = "alibabacloud-dysmsapi20170525" },
-    { name = "asyncpg" },
     { name = "bcrypt" },
     { name = "farlog" },
     { name = "fastapi" },
@@ -1030,6 +1027,15 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+mysql = [
+    { name = "aiomysql" },
+]
+postgres = [
+    { name = "asyncpg" },
+]
+sms-aliyun = [
+    { name = "alibabacloud-dysmsapi20170525" },
+]
 test = [
     { name = "pytest" },
     { name = "pytest-asyncio" },
@@ -1037,10 +1043,10 @@ test = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aiomysql", specifier = ">=0.2.0" },
+    { name = "aiomysql", marker = "extra == 'mysql'", specifier = ">=0.2.0" },
     { name = "aiosqlite", specifier = ">=0.19" },
-    { name = "alibabacloud-dysmsapi20170525", specifier = ">=3.0" },
-    { name = "asyncpg", specifier = ">=0.29" },
+    { name = "alibabacloud-dysmsapi20170525", marker = "extra == 'sms-aliyun'", specifier = ">=3.0" },
+    { name = "asyncpg", marker = "extra == 'postgres'", specifier = ">=0.29" },
     { name = "bcrypt", specifier = ">=4.0" },
     { name = "farlog", specifier = ">=1.1.7" },
     { name = "fastapi", specifier = ">=0.110" },
@@ -1052,7 +1058,7 @@ requires-dist = [
     { name = "sqlalchemy", extras = ["asyncio"], specifier = ">=2.0" },
     { name = "uvicorn", specifier = ">=0.29" },
 ]
-provides-extras = ["test"]
+provides-extras = ["postgres", "mysql", "sms-aliyun", "test"]
 
 [[package]]
 name = "greenlet"

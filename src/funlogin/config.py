@@ -23,10 +23,23 @@ class FunloginSettings(BaseSettings):
     aliyun_secret: str = ""
     aliyun_sms_sign: str = ""
     aliyun_sms_template: str = ""
+    cors_origins: str = "http://127.0.0.1,http://localhost"
 
     model_config = SettingsConfigDict(env_prefix="FUNLOGIN_", env_file=".env")
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        """把逗号分隔的 ``cors_origins`` 解析成来源列表，过滤空白项。
+
+        默认只允许本机回环地址；生产环境需通过 ``FUNLOGIN_CORS_ORIGINS``
+        显式配置白名单域名，不提供不安全的通配默认值。
+        """
+        return [
+            origin.strip() for origin in self.cors_origins.split(",") if origin.strip()
+        ]
 
 
 @lru_cache
 def get_settings() -> FunloginSettings:
+    """获取缓存的配置单例，字段来源见 :class:`FunloginSettings`。"""
     return FunloginSettings()

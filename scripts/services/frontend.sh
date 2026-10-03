@@ -16,7 +16,7 @@ readonly SERVICE_NAME ROOT FRONTEND_DIR RUN_DIR PID_FILE LOG_FILE PORT
 source "${ROOT}/scripts/lib/pid.sh"
 
 usage() {
-  printf 'Usage: %s <start|stop|restart|run|status> <dev|prod>\n' "${0##*/}" >&2
+  printf 'Usage: %s <start|stop|restart|run|status> dev\n' "${0##*/}" >&2
 }
 
 die() {
@@ -24,8 +24,9 @@ die() {
   exit 2
 }
 
-# 纯静态测试页，没有构建产物。dev 只绑本机回环地址；
-# prod 绑 0.0.0.0，供局域网内联调，命令本身不区分「源码/安装产物」。
+# 纯静态测试页，没有构建产物，也没有独立的「已安装正式包」形态可言，
+# 因此只提供 dev（本机回环地址），不提供 prod：没有可区分于源码的产物，
+# 强行保留 prod 只会诱导把源码目录当生产服务对外暴露。
 frontend_command() {
   local env="$1"
   command -v python3 >/dev/null 2>&1 || die "缺少 python3，无法启动静态文件服务"
@@ -33,11 +34,8 @@ frontend_command() {
     dev)
       COMMAND=(python3 -m http.server "${PORT}" --bind 127.0.0.1)
       ;;
-    prod)
-      COMMAND=(python3 -m http.server "${PORT}" --bind 0.0.0.0)
-      ;;
     *)
-      die "env 必须是 dev 或 prod，得到：${env:-<empty>}"
+      die "env 必须是 dev，得到：${env:-<empty>}"
       ;;
   esac
 }
@@ -75,7 +73,7 @@ main() {
 
   case "${action}" in
     start|stop|restart|run)
-      [[ -n "${env}" ]] || { usage; die "${action} 必须指定 dev 或 prod"; }
+      [[ -n "${env}" ]] || { usage; die "${action} 必须指定 dev"; }
       "do_${action}" "${env}"
       ;;
     status)

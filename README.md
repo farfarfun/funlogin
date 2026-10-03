@@ -4,10 +4,25 @@
 
 ## 安装
 
+标准流程使用 `uv`：
+
+```bash
+uv venv
+uv sync
+```
+
+也可用 `pip` 作为兼容方式（非推荐）：
+
 ```bash
 pip install -e .
-# 或
-uv pip install -e .
+```
+
+核心依赖只包含 SQLite（`aiosqlite`）支持。按需追加 extras：
+
+```bash
+uv sync --extra postgres    # PostgreSQL（asyncpg）
+uv sync --extra mysql       # MySQL（aiomysql）
+uv sync --extra sms-aliyun  # 阿里云短信验证码
 ```
 
 ## 配置
@@ -29,6 +44,7 @@ uv pip install -e .
 | `FUNLOGIN_ALIYUN_SECRET` | 阿里云 Secret | |
 | `FUNLOGIN_ALIYUN_SMS_SIGN` | 短信签名 | |
 | `FUNLOGIN_ALIYUN_SMS_TEMPLATE` | 短信模板 | |
+| `FUNLOGIN_CORS_ORIGINS` | 允许跨域的来源，逗号分隔 | `http://127.0.0.1,http://localhost` |
 
 ## 快速集成
 
@@ -111,6 +127,13 @@ app.include_router(router, prefix="/api")
 ```
 
 ## 开发
+
+```bash
+uv sync --extra test
+uv run pytest -v
+```
+
+也可用 `pip` 作为兼容方式（非推荐）：
 
 ```bash
 pip install -e ".[test]"
