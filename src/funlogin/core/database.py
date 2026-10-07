@@ -17,6 +17,11 @@ AsyncSessionLocal = async_sessionmaker(
 
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
+    """提供一个请求级异步数据库会话。
+
+    返回：
+        可供 FastAPI 依赖注入使用的 ``AsyncSession``；请求结束后自动关闭。
+    """
     async with AsyncSessionLocal() as session:
         yield session
 

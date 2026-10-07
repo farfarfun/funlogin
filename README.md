@@ -44,15 +44,29 @@ uv sync --extra sms-aliyun  # 阿里云短信验证码
 | `FUNLOGIN_ALIYUN_SECRET` | 阿里云 Secret | |
 | `FUNLOGIN_ALIYUN_SMS_SIGN` | 短信签名 | |
 | `FUNLOGIN_ALIYUN_SMS_TEMPLATE` | 短信模板 | |
+| `FUNLOGIN_SMS_LOCAL_MODE` | 仅开发/测试时允许本地保存验证码；生产环境必须保持关闭 | `false` |
 | `FUNLOGIN_CORS_ORIGINS` | 允许跨域的来源，逗号分隔 | `http://127.0.0.1,http://localhost` |
+
+启动开发服务前请显式设置 JWT 密钥；示例中的本地短信模式仅用于没有阿里云凭据时联调，不能用于生产：
+
+```bash
+export FUNLOGIN_JWT_SECRET="$(openssl rand -hex 32)"
+export FUNLOGIN_SMS_LOCAL_MODE=true
+```
+
+生产环境须通过受控环境变量或 `funsecret` 提供唯一的 `FUNLOGIN_JWT_SECRET`，并配置
+`FUNLOGIN_ALIYUN_ACCESS_KEY`、`FUNLOGIN_ALIYUN_SECRET`、`FUNLOGIN_ALIYUN_SMS_SIGN` 和
+`FUNLOGIN_ALIYUN_SMS_TEMPLATE`；未配置短信凭据时，发码请求会失败。
 
 ## 快速集成
 
 ```python
 from fastapi import FastAPI
 from funlogin import router
+from funlogin.core.response import setup_exception_handlers
 
 app = FastAPI()
+setup_exception_handlers(app)
 app.include_router(router, prefix="/api")
 
 # 运行: uvicorn your_app:app
@@ -73,7 +87,6 @@ app.include_router(router, prefix="/api")
 | 0 | 成功 |
 | 40001 | 业务错误（如用户名已存在） |
 | 40101 | 未登录 / Token 无效 |
-| 40102 | Token 已过期 |
 | 40301 | 禁止访问 |
 | 50001 | 服务端内部错误 |
 

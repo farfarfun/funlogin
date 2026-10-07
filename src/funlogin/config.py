@@ -23,6 +23,7 @@ class FunloginSettings(BaseSettings):
     aliyun_secret: str = ""
     aliyun_sms_sign: str = ""
     aliyun_sms_template: str = ""
+    sms_local_mode: bool = False
     cors_origins: str = "http://127.0.0.1,http://localhost"
 
     model_config = SettingsConfigDict(env_prefix="FUNLOGIN_", env_file=".env")
