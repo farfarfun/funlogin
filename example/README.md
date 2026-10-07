@@ -2,7 +2,13 @@
 
 ## 启动
 
-确保已安装依赖：`uv pip install -e .`
+确保已安装依赖：`uv pip install -e .`。启动前设置开发用 JWT 密钥；本地短信验证码联调还需显式开启本地模式：
+
+```bash
+export FUNLOGIN_JWT_SECRET="$(openssl rand -hex 32)"
+export FUNLOGIN_SMS_LOCAL_MODE=true
+```
+
 启动后端时会自动创建数据库表。
 
 统一通过项目根目录的 `scripts/setup.sh` 管理后端 / 前端两个示例服务的生命周期

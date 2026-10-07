@@ -14,19 +14,23 @@ def _mask_phone(phone: str) -> str:
 
 
 def send_sms_code(phone: str, code: str) -> bool:
-    """通过阿里云短信服务发送验证码（未配置阿里云凭据时降级为仅本地存码，便于开发环境联调）。
+    """通过阿里云短信服务发送验证码。
 
     参数：
         phone: 接收验证码的手机号。
         code: 验证码明文，由调用方生成。
 
     返回：
-        发送（或本地降级存码）成功返回 ``True``；调用阿里云 API 失败返回 ``False``。
+        发送成功返回 ``True``；缺少配置或调用阿里云 API 失败返回 ``False``。
+        仅在 ``FUNLOGIN_SMS_LOCAL_MODE=true`` 时，允许本地存码用于开发或测试。
     """
     settings = get_settings()
     if not settings.aliyun_access_key or not settings.aliyun_secret:
-        store_code(phone, code)
-        return True
+        if settings.sms_local_mode:
+            store_code(phone, code)
+            return True
+        logger.error("阿里云短信凭据未配置，拒绝发送验证码")
+        return False
     try:
         from alibabacloud_dysmsapi20170525 import models as dysms_models
         from alibabacloud_dysmsapi20170525.client import Client

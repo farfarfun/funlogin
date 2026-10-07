@@ -1,6 +1,7 @@
 from funlogin.auth.repository import AuthRepository
 from funlogin.core.jwt import create_access_token, create_refresh_token
 from funlogin.core.security import hash_password, verify_password
+from funlogin.models import User
 from funlogin.sms.aliyun import verify_code
 
 
@@ -154,7 +155,7 @@ class AuthService:
             "refresh_token": create_refresh_token(payload),
         }
 
-    async def update_role(self, user_id: int, role: int):
+    async def update_role(self, user_id: int, role: int) -> User | None:
         """修改用户角色，枚举值由调用方自行定义。
 
         参数：
