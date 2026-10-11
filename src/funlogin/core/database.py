@@ -6,6 +6,8 @@ from funlogin.config import get_settings
 
 
 class Base(DeclarativeBase):
+    """SQLAlchemy ORM 模型的声明式基类。"""
+
     pass
 
 

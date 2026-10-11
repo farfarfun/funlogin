@@ -11,6 +11,7 @@ def _utcnow() -> datetime:
 
 
 class User(Base):
+    """用户主表，保存用户标识、角色及创建和更新时间。"""
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -22,6 +23,7 @@ class User(Base):
 
 
 class UserCredential(Base):
+    """用户认证凭据，``type`` 与 ``identifier`` 的组合全局唯一。"""
     __tablename__ = "user_credentials"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
