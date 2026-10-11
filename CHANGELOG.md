@@ -65,8 +65,11 @@
 - JWT access/refresh token 签发、校验与刷新
 - QQ、微信 OAuth2 授权绑定
 - 阿里云短信验证码发送与校验（含本地降级存码）
-- Alembic 数据库迁移脚本与初始 schema（`User`、`UserCredential`、`QQBinding`、
-  `WeChatBinding`、`PhoneBinding`）
+- SQLAlchemy 初始模型与示例应用启动时自动建表（`User`、`UserCredential`、`QQBinding`、
+  `WeChatBinding`、`PhoneBinding`）。项目当前未提供 Alembic 迁移脚本；升级已有数据库前应先
+  备份。新增 `users.role` 字段的已有库需执行
+  `ALTER TABLE users ADD COLUMN role INTEGER DEFAULT 1`，其他不兼容 schema 变更需由接入方
+  按数据库类型自行迁移或重建。
 
 ## [1.0.6]
 

@@ -16,6 +16,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 class RegisterRequest(BaseModel):
+    """注册请求，可提供用户名/邮箱加密码，或手机号加验证码。"""
     username: str | None = None
     email: str | None = None
     phone: str | None = None
@@ -24,6 +25,7 @@ class RegisterRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
+    """登录请求，认证字段组合与注册请求一致。"""
     username: str | None = None
     email: str | None = None
     phone: str | None = None
@@ -32,14 +34,17 @@ class LoginRequest(BaseModel):
 
 
 class RefreshRequest(BaseModel):
+    """刷新令牌请求，``refresh_token`` 用于换取新的令牌对。"""
     refresh_token: str
 
 
 class SendCodeRequest(BaseModel):
+    """短信验证码请求，``phone`` 为接收验证码的手机号。"""
     phone: str
 
 
 class UpdateRoleRequest(BaseModel):
+    """角色更新请求，``role`` 的枚举语义由接入方定义。"""
     role: int
 
 

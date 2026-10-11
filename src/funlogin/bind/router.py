@@ -30,10 +30,12 @@ def get_bind_service(session: AsyncSession = Depends(get_async_session)) -> Bind
 
 
 class SendCodeRequest(BaseModel):
+    """手机号绑定验证码请求，``phone`` 为待绑定手机号。"""
     phone: str
 
 
 class BindPhoneRequest(BaseModel):
+    """手机号绑定请求，包含待绑定手机号及其短信验证码。"""
     phone: str
     code: str
 
@@ -99,6 +101,7 @@ async def qq_authorize(redirect_uri: str) -> dict:
 
 
 class BindQQRequest(BaseModel):
+    """QQ 授权回调请求，包含授权码和注册时使用的回调地址。"""
     code: str
     redirect_uri: str
 
@@ -150,6 +153,7 @@ async def wechat_authorize(redirect_uri: str) -> dict:
 
 
 class BindWeChatRequest(BaseModel):
+    """微信授权回调请求，``code`` 为微信返回的授权码。"""
     code: str
 
 

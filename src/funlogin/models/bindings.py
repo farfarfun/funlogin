@@ -7,6 +7,7 @@ from funlogin.core.database import Base
 
 
 class QQBinding(Base):
+    """用户与 QQ 开放平台账号的绑定记录，按 ``openid`` 唯一。"""
     __tablename__ = "qq_bindings"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -23,6 +24,7 @@ class QQBinding(Base):
 
 
 class WeChatBinding(Base):
+    """用户与微信开放平台账号的绑定记录，按 ``openid`` 唯一。"""
     __tablename__ = "wechat_bindings"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -39,6 +41,7 @@ class WeChatBinding(Base):
 
 
 class PhoneBinding(Base):
+    """用户与手机号的绑定记录，手机号只能关联一个用户。"""
     __tablename__ = "phone_bindings"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
